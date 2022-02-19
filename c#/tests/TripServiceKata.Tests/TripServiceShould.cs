@@ -34,6 +34,8 @@ namespace TripServiceKata.Tests
             var userSession = Substitute.For<IUserSession>();
             var service = new TripService(userSession);
 
+            var unused=userSession.GetLoggedUser().Returns(moqUser);
+
             Assert.Empty(service.GetTripsByUser(moqUser));
         }
     }
