@@ -16,12 +16,6 @@ namespace TripServiceKata.Service
             return userSession;
         }
 
-        public bool IsUserLoggedIn(User user)
-        {
-            throw new DependendClassCallDuringUnitTestException(
-                "UserSession.IsUserLoggedIn() should not be called in an unit test");
-        }
-
         public User GetLoggedUser()
         {
             throw new DependendClassCallDuringUnitTestException(
