@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using TripServiceKata.Service;
+using Xunit;
 
 namespace TripServiceKata.Tests
 {
@@ -7,7 +8,7 @@ namespace TripServiceKata.Tests
         [Fact]
         public void failTest()
         {
-            var tripService = new TripService();
+            var tripService = new TripService(UserSession.GetInstance());
             tripService.GetTripsByUser(null);
 
             Assert.True(false);
