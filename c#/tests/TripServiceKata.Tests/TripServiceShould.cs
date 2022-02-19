@@ -28,7 +28,7 @@ namespace TripServiceKata.Tests
         }
 
         [Fact]
-        public void tripsList_must_be_empty()
+        public void tripsList_by_user_must_be_empty()
         {
             var moqUser = new User();
             var userSession = Substitute.For<IUserSession>();
