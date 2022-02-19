@@ -1,5 +1,6 @@
 ﻿using NSubstitute;
 using System;
+using TripServiceKata.Entity;
 using TripServiceKata.Exception;
 using TripServiceKata.Service;
 using Xunit;
@@ -24,6 +25,16 @@ namespace TripServiceKata.Tests
             var service = new TripService(userSession);
 
             Assert.Throws<UserNotLoggedInException>(()=>service.GetTripsByUser(null));
+        }
+
+        [Fact]
+        public void tripsList_must_be_empty()
+        {
+            var moqUser = new User();
+            var userSession = Substitute.For<IUserSession>();
+            var service = new TripService(userSession);
+
+            Assert.Empty(service.GetTripsByUser(moqUser));
         }
     }
 }
