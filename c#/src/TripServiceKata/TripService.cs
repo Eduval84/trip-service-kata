@@ -30,10 +30,8 @@ namespace TripServiceKata
 
                 return tripList;
             }
-            else
-            {
-                throw new UserNotLoggedInException();
-            }
+
+            throw new UserNotLoggedInException();
         }
     }
 }
