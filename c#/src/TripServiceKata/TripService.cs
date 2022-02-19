@@ -19,6 +19,7 @@ namespace TripServiceKata
             List<Trip> tripList = new List<Trip>();
             User loggedUser = userSession.GetLoggedUser();
             bool isFriend = false;
+
             if (loggedUser != null)
             {
                 foreach (User friend in user.GetFriends())

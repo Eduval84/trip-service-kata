@@ -1,5 +1,6 @@
 ﻿using NSubstitute;
 using System;
+using System.Collections.Generic;
 using TripServiceKata.Entity;
 using TripServiceKata.Exception;
 using TripServiceKata.Service;
@@ -38,5 +39,26 @@ namespace TripServiceKata.Tests
 
             Assert.Empty(service.GetTripsByUser(moqUser));
         }
+
+        [Fact]
+        public void Find_Trips_By_User()
+        {
+
+            var moqLoggedUserUser = new User();
+            var moqUser = new User();
+
+            moqUser.AddFriend(moqLoggedUserUser);
+            var userSession = Substitute.For<IUserSession>();
+            var service = new TripService(userSession);
+
+            var unused=userSession.GetLoggedUser().Returns(moqLoggedUserUser);
+            var moqExpectedTripList = new List<Trip>();
+            moqUser.FindTripsByUser().Returns(moqExpectedTripList);
+            
+            var trips = service.GetTripsByUser(moqUser);
+            Assert.True(trips == moqExpectedTripList);
+ 
+        }
+
     }
 }
