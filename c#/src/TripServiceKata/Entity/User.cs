@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using TripServiceKata.Exception;
 
 namespace TripServiceKata.Entity
 {
@@ -15,12 +14,6 @@ namespace TripServiceKata.Entity
         public void AddFriend(User user)
         {
             friends.Add(user);
-        }
-
-        public List<Trip> FindTripsByUser()
-        {
-            throw new DependendClassCallDuringUnitTestException(
-                "TripDAO should not be invoked on an unit test.");
         }
     }
 }

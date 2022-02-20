@@ -1,6 +1,7 @@
 ﻿using NSubstitute;
 using System;
 using System.Collections.Generic;
+using FluentAssertions;
 using TripServiceKata.Entity;
 using TripServiceKata.Exception;
 using TripServiceKata.Service;
@@ -13,7 +14,7 @@ namespace TripServiceKata.Tests
         [Fact]
         public void failTest()
         {
-            var tripService = new TripService(UserSession.GetInstance());
+            var tripService = new TripService(UserSession.GetInstance(), new TripDAO());
             tripService.GetTripsByUser(null);
 
             Assert.True(false);
@@ -23,7 +24,7 @@ namespace TripServiceKata.Tests
         public void throw_user_not_logged_in_exception()
         {
             var userSession = Substitute.For<IUserSession>();
-            var service = new TripService(userSession);
+            var service = new TripService(userSession, new TripDAO());
 
             Assert.Throws<UserNotLoggedInException>(()=>service.GetTripsByUser(null));
         }
@@ -31,33 +32,35 @@ namespace TripServiceKata.Tests
         [Fact]
         public void tripsList_by_user_must_be_empty()
         {
-            var moqUser = new User();
+            var user = new User();
             var userSession = Substitute.For<IUserSession>();
-            var service = new TripService(userSession);
+            var service = new TripService(userSession, new TripDAO());
 
-            var unused=userSession.GetLoggedUser().Returns(moqUser);
+            var unused=userSession.GetLoggedUser().Returns(user);
 
-            Assert.Empty(service.GetTripsByUser(moqUser));
+            Assert.Empty(service.GetTripsByUser(user));
         }
 
         [Fact]
         public void Find_Trips_By_User()
         {
-
-            var moqLoggedUserUser = new User();
-            var moqUser = new User();
-
-            moqUser.AddFriend(moqLoggedUserUser);
             var userSession = Substitute.For<IUserSession>();
-            var service = new TripService(userSession);
+            var tripDao = Substitute.For<ITripDAO>();
+            var service = new TripService(userSession, tripDao);
 
-            var unused=userSession.GetLoggedUser().Returns(moqLoggedUserUser);
-            var moqExpectedTripList = new List<Trip>();
-            moqUser.FindTripsByUser().Returns(moqExpectedTripList);
-            
-            var trips = service.GetTripsByUser(moqUser);
-            Assert.True(trips == moqExpectedTripList);
- 
+            var loggedUser = new User();
+            var testUser = new User();
+
+            testUser.AddFriend(loggedUser);
+
+            var configcaCall = userSession.GetLoggedUser().Returns(loggedUser);
+
+            List<Trip> expectedListOfTrip = new List<Trip>();
+            var configcaCall2 = tripDao.FindTripsByUser(testUser).Returns(expectedListOfTrip);
+
+            var trips = service.GetTripsByUser(testUser);
+            Assert.Equal(trips,expectedListOfTrip);
+
         }
 
     }
