@@ -11,14 +11,6 @@ namespace TripServiceKata.Tests
 {
     public class TripServiceShould
     {
-        [Fact]
-        public void failTest()
-        {
-            var tripService = new TripService(UserSession.GetInstance(), new TripDAO());
-            tripService.GetTripsByUser(null);
-
-            Assert.True(false);
-        }
 
         [Fact]
         public void throw_user_not_logged_in_exception()
