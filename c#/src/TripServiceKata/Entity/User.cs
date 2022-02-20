@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace TripServiceKata.Entity
 {
@@ -14,6 +15,11 @@ namespace TripServiceKata.Entity
         public void AddFriend(User user)
         {
             friends.Add(user);
+        }
+
+        public bool IsFriend(User loggedUser)
+        {
+            return (from friend in GetFriends() let isFriend = true select friend).Contains(loggedUser);
         }
     }
 }
