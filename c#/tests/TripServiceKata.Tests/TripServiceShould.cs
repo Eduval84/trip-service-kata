@@ -9,12 +9,15 @@ namespace TripServiceKata.Tests
 {
     public class TripServiceShould
     {
+        private readonly IUserSession userSessionMoq = Substitute.For<IUserSession>();
+        private readonly ITripDAO tripDaoMoq = Substitute.For<ITripDAO>();
+        private TripService service;
+        
 
         [Fact]
         public void throw_user_not_logged_in_exception()
         {
-            var userSession = Substitute.For<IUserSession>();
-            var service = new TripService(userSession, new TripDAO());
+            var service = new TripService(userSessionMoq, new TripDAO());
 
             Assert.Throws<UserNotLoggedInException>(()=>service.GetTripsByUser(null));
         }
@@ -23,30 +26,32 @@ namespace TripServiceKata.Tests
         public void tripsList_by_user_must_be_empty()
         {
             var user = new User();
-            var userSession = Substitute.For<IUserSession>();
-            var service = new TripService(userSession, new TripDAO());
+            service = new TripService(userSessionMoq, new TripDAO());
 
-            var unused=userSession.GetLoggedUser().Returns(user);
+            //Configured Call
+            userSessionMoq.GetLoggedUser().Returns(user);
 
             Assert.Empty(service.GetTripsByUser(user));
         }
 
         [Fact]
-        public void Find_Trips_By_friends_users()
+        public void Find_Trips_By_Friends_Users()
         {
-            var userSession = Substitute.For<IUserSession>();
-            var tripDao = Substitute.For<ITripDAO>();
-            var service = new TripService(userSession, tripDao);
 
-            var loggedUser = new User();
+            service = new TripService(userSessionMoq, tripDaoMoq);
+
+            var userToBeAddedLikeAFriend = new User();
             var testUser = new User();
 
-            testUser.AddFriend(loggedUser);
+            testUser.AddFriend(userToBeAddedLikeAFriend);
 
-            var configcaCall = userSession.GetLoggedUser().Returns(loggedUser);
+            //Configured Call
+            userSessionMoq.GetLoggedUser().Returns(userToBeAddedLikeAFriend);
 
             List<Trip> expectedListOfTrip = new List<Trip>();
-            var configcaCall2 = tripDao.FindTripsByUser(testUser).Returns(expectedListOfTrip);
+
+            //Configured Call
+            tripDaoMoq.FindTripsByUser(testUser).Returns(expectedListOfTrip);
 
             var trips = service.GetTripsByUser(testUser);
             Assert.Equal(trips,expectedListOfTrip);
@@ -59,11 +64,9 @@ namespace TripServiceKata.Tests
         {
             var userWithoutFriends = new User();
 
-            var userSession = Substitute.For<IUserSession>();
-            userSession.GetLoggedUser().Returns(userWithoutFriends);
+            userSessionMoq.GetLoggedUser().Returns(userWithoutFriends);
 
-            var tripDao = Substitute.For<ITripDAO>();
-            var service = new TripService(userSession, tripDao);
+            service = new TripService(userSessionMoq, tripDaoMoq);
 
             var trips = service.GetTripsByUser(userWithoutFriends);
 

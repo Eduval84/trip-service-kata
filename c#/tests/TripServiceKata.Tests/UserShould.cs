@@ -24,7 +24,7 @@ namespace TripServiceKata.Tests
 
             firstUser.AddFriend(newFriendForfirstUser);
 
-            Assert.True(firstUser.GetFriends().Contains(newFriendForfirstUser));
+            Assert.Contains(newFriendForfirstUser, firstUser.GetFriends());
 
         }
 
